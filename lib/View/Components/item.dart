@@ -18,81 +18,114 @@ class Item extends StatelessWidget {
       child: Container(
         child: Row(
           children: [
-            Container(
-              height: screenHeight * 0.05,
-              child: Image.network(item.image),
+            Expanded(
+              flex: 2,
+              child: Container(
+                height: screenHeight * 0.05,
+                child: Image.network(item.image),
+              ),
             ),
             SizedBox(
               width: screenWidth * 0.03,
             ),
-            Column(
-              children: [
-                Text(
-                  item.id,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 19,
+            Expanded(
+              flex: 4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.id,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: screenWidth * 0.01,
-                ),
-                Text(
-                  '0.3 ' + item.symbol,
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 17,
+                  SizedBox(
+                    width: screenWidth * 0.01,
                   ),
-                ),
-              ],
+                  Text(
+                    '0.3 ' + item.symbol,
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               width: screenWidth * 0.03,
             ),
-            Container(
-              height: screenHeight * 0.05,
-              width: screenWidth * 0.2,
-              child: Sparkline(
-                data: item.sparklineIn7D.price,
-                lineWidth: 2.0,
-                lineColor: Color.fromARGB(255, 255, 72, 72),
-                fillMode: FillMode.below,
-                fillGradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: const [0.0, 0.7],
-                  colors: [
-                    Color.fromARGB(255, 255, 72, 72),
-                    Color.fromARGB(255, 254, 218, 218).withOpacity(0.1),
-                  ],
+            Expanded(
+              flex: 4,
+              child: Container(
+                height: screenHeight * 0.05,
+                child: Sparkline(
+                  data: item.sparklineIn7D.price,
+                  lineWidth: 2.0,
+                  lineColor: item.marketCapChangePercentage24H > 0
+                      ? Color.fromARGB(255, 255, 72, 72)
+                      : Color.fromARGB(255, 48, 208, 112),
+                  fillMode: FillMode.below,
+                  fillGradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.0, 0.7],
+                    colors: item.marketCapChangePercentage24H > 0
+                        ? [
+                            Color.fromARGB(255, 255, 72, 72),
+                            Color.fromARGB(255, 254, 218, 218).withOpacity(0.5),
+                          ]
+                        : [
+                            Color.fromARGB(255, 72, 255, 145),
+                            Color.fromARGB(255, 218, 254, 218).withOpacity(0.5),
+                          ],
+                  ),
                 ),
               ),
             ),
-            Column(
-              children: [
-                Text(
-                  '\$ ' + item.currentPrice.toString(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 19,
+            SizedBox(
+              width: screenWidth * 0.01,
+            ),
+            Expanded(
+              flex: 5,
+              child: Column(
+                children: [
+                  Text(
+                    '\$ ' + item.currentPrice.toString(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                    ),
                   ),
-                ),
-                Row(children: [
-                  Text(item.priceChange24H.toStringAsFixed(2),
-                      style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 15,
-                          color: Colors.grey)),
-                  SizedBox(
-                    width: screenWidth * 0.03,
-                  ),
-                  Text(item.marketCapChangePercentage24H.toStringAsFixed(2),
-                      style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 15,
-                          color: Colors.grey)),
-                ])
-              ],
+                  Row(children: [
+                    Text(
+                        item.priceChange24H.toString().contains('-')
+                            ? '-\$' +
+                                item.priceChange24H
+                                    .toStringAsFixed(2)
+                                    .toString()
+                                    .replaceAll('-', '')
+                            : '\$' + item.priceChange24H.toStringAsFixed(2),
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 14,
+                            color: Colors.grey)),
+                    SizedBox(
+                      width: screenWidth * 0.03,
+                    ),
+                    Text(
+                        item.marketCapChangePercentage24H.toStringAsFixed(2) +
+                            '%',
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 15,
+                            color: item.marketCapChangePercentage24H > 0
+                                ? Colors.green
+                                : Colors.red))
+                  ])
+                ],
+              ),
             )
           ],
         ),

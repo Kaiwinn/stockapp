@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:stockapp/Model/coinModel.dart';
 import 'package:stockapp/View/Components/item.dart';
+import 'package:stockapp/View/Components/item2.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -116,7 +117,19 @@ class _HomeState extends State<Home> {
                 height: screenHeight * 0.7,
                 width: screenWidth,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      // spreadRadius: 4, là khoảng cách mà bóng trổ lan ra là 4
+                      spreadRadius: 4,
+                      // blurRadius: 7, là độ mờ của bóng là 7
+                      blurRadius: 7,
+
+                      // offset: Offset(0, 3), là khoảng cách bóng đổ xuống dưới là 3 (truyền vào 2 giá trị x, y, là khoảng cách horizontal và  vertical)
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                  color: Color.fromARGB(255, 255, 255, 255),
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(50),
                       topRight: Radius.circular(50)),
@@ -138,18 +151,66 @@ class _HomeState extends State<Home> {
                           Icon(Icons.add)
                         ]),
                   ),
+                  SizedBox(
+                    height: screenHeight * 0.02,
+                  ),
+                  isRefreshing
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : ListView.builder(
+                          itemCount: 4,
+                          // shrinkWrap: true, để co lại nếu kích thước cha giới hạn.
+                          shrinkWrap: true,
+                          // physics: NeverScrollableScrollPhysics(), (Không thể cuộn)
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Item(
+                              item: coinMarket![index],
+                            );
+                          }),
+                  SizedBox(
+                    height: screenHeight * 0.02,
+                  ),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Recommen to Buy',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
                   Expanded(
-                      child: isRefreshing
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : ListView.builder(
-                              itemCount: 4,
-                              itemBuilder: (context, index) {
-                                return Item(
-                                  item: coinMarket![index],
-                                );
-                              }))
+                      child: Container(
+                    width: screenWidth,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: screenWidth * 0.01,
+                      ),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: coinMarket!.length,
+                        itemBuilder: (context, index) {
+                          return Item2(
+                            item: coinMarket![index],
+                          );
+                        },
+                      ),
+                    ),
+                  )),
+                  SizedBox(
+                    height: screenHeight * 0.02,
+                  ),
                 ]),
               )
             ]),
