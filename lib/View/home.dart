@@ -229,7 +229,9 @@ class _HomeState extends State<Home> {
       isRefreshing = true;
     });
     var response = await http.get(Uri.parse(url), headers: {
+      // Dữ liệu gửi đi dạng Json
       "Content-Type": "application/json",
+      // Dữ liệu trả về dạng Json
       "Accept": "application/json",
     });
     setState(() {
